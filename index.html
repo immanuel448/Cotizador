@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cotizador</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Cotización</h1>
+
+  <!-- Cliente -->
+  <div class="card">
+    <h2>Cliente</h2>
+    <input type="text" id="clienteNombre" placeholder="Nombre">
+    <input type="text" id="clienteTelefono" placeholder="Teléfono">
+    <input type="text" id="clienteEmpresa" placeholder="Empresa">
+  </div>
+
+  <!-- Productos -->
+  <div class="card">
+    <h2>Productos</h2>
+
+    <table id="tablaProductos">
+      <thead>
+        <tr>
+          <th>Descripción</th>
+          <th>Cant.</th>
+          <th>Precio</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button id="addRow">Agregar producto</button>
+  </div>
+
+  <!-- Totales -->
+  <div class="card">
+    <h2>Totales</h2>
+    <p>Subtotal: $<span id="subtotal">0</span></p>
+    <p>IVA (16%): $<span id="iva">0</span></p>
+    <p><strong>Total: $<span id="total">0</span></strong></p>
+  </div>
+
+  <!-- Acciones -->
+  <div class="actions">
+    <button id="btnPDF">Generar PDF</button>
+    <button id="btnWA">Enviar WhatsApp</button>
+  </div>
+
+</div>
+
+<script src="utils.js"></script>
+<script src="pdf.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
