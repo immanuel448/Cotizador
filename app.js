@@ -46,9 +46,30 @@ function updateTotals() {
 // inicial
 addRow();
 
-// ... todo tu código anterior (addRow, updateTotals, etc.)
+function validarFormulario() {
+  const nombre = document.getElementById("clienteNombre").value.trim();
+  const telefono = document.getElementById("clienteTelefono").value.trim();
+
+  if (!nombre) {
+    alert("Falta nombre");
+    return false;
+  }
+
+  if (!/^\d{10}$/.test(telefono)) {
+    alert("Teléfono inválido (10 dígitos)");
+    return false;
+  }
+
+  if (parseFloat(totalEl.textContent) <= 0) {
+    alert("Agrega al menos un producto válido");
+    return false;
+  }
+
+  return true;
+}
 
 document.getElementById("btnWA").addEventListener("click", () => {
+  if (!validarFormulario()) return;
   const nombre = document.getElementById("clienteNombre").value;
   const telefonoRaw = document.getElementById("clienteTelefono").value;
   const total = totalEl.textContent;
