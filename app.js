@@ -45,3 +45,19 @@ function updateTotals() {
 
 // inicial
 addRow();
+
+// ... todo tu código anterior (addRow, updateTotals, etc.)
+
+document.getElementById("btnWA").addEventListener("click", () => {
+  const nombre = document.getElementById("clienteNombre").value;
+  const telefonoRaw = document.getElementById("clienteTelefono").value;
+  const total = totalEl.textContent;
+
+  // convertir a formato internacional (México)
+  const telefono = "521" + telefonoRaw;
+
+  const mensaje = `Hola ${nombre}, tu cotización es de $${total}`;
+  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+  window.open(url, "_blank");
+});
