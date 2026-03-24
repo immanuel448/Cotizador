@@ -19,11 +19,12 @@ body {
   background-color: #fff;
   padding: 20px 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* --- Títulos --- */
-h1, h2 {
+h1,
+h2 {
   color: #222;
   margin-bottom: 15px;
 }
@@ -40,6 +41,32 @@ h2 {
   margin-top: 20px;
 }
 
+/* no sirve este intervalo de codigo */
+.card {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Contenedor de inputs en fila */
+.card .inputs-row {
+  display: flex;
+  gap: 10px; /* espacio entre inputs */
+}
+
+/* Inputs dentro de la fila ocupan todo el espacio disponible de manera proporcional */
+.card .inputs-row input {
+  flex: 1; /* cada input ocupa igual proporción del ancho de la fila */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+/* no sirve este intervalo de codigo */
+
 /* --- Formulario --- */
 form {
   display: flex;
@@ -52,8 +79,9 @@ form label {
   font-weight: bold;
 }
 
-form input, form textarea {
-  flex: 2 1 300px;
+form input,
+form textarea {
+  width: 100%; /* ocupa todo el ancho disponible */
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -80,6 +108,26 @@ button:hover {
   background-color: #0056b3;
 }
 
+/* Contenedor de botones */
+/* Contenedor de botones centrado */
+.botones-footer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Estilo de botones */
+.botones-footer button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+}
+
 /* --- Tabla de cotización --- */
 table {
   width: 100%;
@@ -87,7 +135,8 @@ table {
   margin-top: 20px;
 }
 
-table th, table td {
+table th,
+table td {
   padding: 10px 8px;
   text-align: left;
   border-bottom: 1px solid #ddd;

@@ -20,7 +20,7 @@ function generarPDF() {
   // Título
   doc.setFontSize(18);
   doc.setTextColor(0, 51, 153);
-  doc.text("COTIZACIÓN", 14, 20);
+  doc.text(`COTIZACIÓN - ${window.nombreTienda}`, 14, 20);
 
   // Info derecha
   doc.setFontSize(10);

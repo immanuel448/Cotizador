@@ -1,66 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Cotizador</title>
-  <link rel="stylesheet" href="styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cotizador</title>
+    <link rel="stylesheet" href="styles.css" />
 
-  <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-</head>
-<body>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Cotización - <span id="tienda"></span></h1>
 
-<div class="container">
+      <!-- Cliente -->
+      <div class="card">
+        <h2>Cliente</h2>
+        <div class="inputs-row">
+          <input type="text" id="clienteNombre" placeholder="Nombre" />
+          <input type="text" id="clienteTelefono" placeholder="Teléfono" />
+          <input type="text" id="clienteEmpresa" placeholder="Empresa" />
+        </div>
+      </div>
 
-  <h1>Cotización</h1>
+      <!-- Productos -->
+      <div class="card">
+        <h2>Productos</h2>
 
-  <!-- Cliente -->
-  <div class="card">
-    <h2>Cliente</h2>
-    <input type="text" id="clienteNombre" placeholder="Nombre">
-    <input type="text" id="clienteTelefono" placeholder="Teléfono">
-    <input type="text" id="clienteEmpresa" placeholder="Empresa">
-  </div>
+        <table id="tablaProductos">
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th>Cant.</th>
+              <th>Precio</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
 
-  <!-- Productos -->
-  <div class="card">
-    <h2>Productos</h2>
+        <button id="addRow">Agregar producto</button>
+      </div>
 
-    <table id="tablaProductos">
-      <thead>
-        <tr>
-          <th>Descripción</th>
-          <th>Cant.</th>
-          <th>Precio</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+      <!-- Totales -->
+      <div class="card">
+        <h2>Totales</h2>
+        <p>Subtotal: $<span id="subtotal">0</span></p>
+        <p>IVA (16%): $<span id="iva">0</span></p>
+        <p>
+          <strong>Total: $<span id="total">0</span></strong>
+        </p>
+      </div>
 
-    <button id="addRow">Agregar producto</button>
-  </div>
+      <!-- Acciones -->
+      <div class="actions">
+        <div class="botones-footer">
+          <button id="btnPDF">Generar PDF</button>
+          <button id="btnWA">Enviar WhatsApp</button>
+          <button id="btnLimpiar">Limpiar</button>
+        </div>
+      </div>
+    </div>
 
-  <!-- Totales -->
-  <div class="card">
-    <h2>Totales</h2>
-    <p>Subtotal: $<span id="subtotal">0</span></p>
-    <p>IVA (16%): $<span id="iva">0</span></p>
-    <p><strong>Total: $<span id="total">0</span></strong></p>
-  </div>
-
-  <!-- Acciones -->
-  <div class="actions">
-    <button id="btnPDF">Generar PDF</button>
-    <button id="btnWA">Enviar WhatsApp</button>
-  </div>
-
-</div>
-
-<script src="utils.js"></script>
-<script src="pdf.js"></script>
-<script src="app.js"></script>
-
-</body>
+    <script src="utils.js"></script>
+    <script src="pdf.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>

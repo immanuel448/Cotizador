@@ -5,6 +5,8 @@ const totalEl = document.getElementById("total");
 
 document.getElementById("addRow").addEventListener("click", addRow);
 
+document.getElementById("tienda").textContent = window.nombreTienda;
+
 function addRow() {
   const row = document.createElement("tr");
 
@@ -17,7 +19,7 @@ function addRow() {
 
   tabla.appendChild(row);
 
-  row.querySelectorAll("input").forEach(input => {
+  row.querySelectorAll("input").forEach((input) => {
     input.addEventListener("input", updateTotals);
   });
 }
@@ -25,7 +27,7 @@ function addRow() {
 function updateTotals() {
   let subtotal = 0;
 
-  document.querySelectorAll("#tablaProductos tbody tr").forEach(row => {
+  document.querySelectorAll("#tablaProductos tbody tr").forEach((row) => {
     const qty = parseFloat(row.querySelector(".qty").value) || 0;
     const price = parseFloat(row.querySelector(".price").value) || 0;
 
@@ -77,8 +79,26 @@ document.getElementById("btnWA").addEventListener("click", () => {
   // convertir a formato internacional (México)
   const telefono = "521" + telefonoRaw;
 
-  const mensaje = `Hola ${nombre}, tu cotización es de $${total}`;
+  const mensaje = `Hola ${nombre}, tu cotización de ${window.nombreTienda} es de $${total}`;
   const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
 
   window.open(url, "_blank");
+});
+
+document.getElementById("btnLimpiar").addEventListener("click", () => {
+  // Limpiar inputs del cliente
+  document.getElementById("clienteNombre").value = "";
+  document.getElementById("clienteTelefono").value = "";
+  document.getElementById("clienteEmpresa").value = "";
+
+  // Limpiar tabla de productos
+  tabla.innerHTML = "";
+
+  // Reiniciar totales
+  subtotalEl.textContent = "0.00";
+  ivaEl.textContent = "0.00";
+  totalEl.textContent = "0.00";
+
+  // Agregar fila inicial vacía
+  addRow();
 });
