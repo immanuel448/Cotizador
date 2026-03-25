@@ -2,6 +2,7 @@ const tabla = document.querySelector("#tablaProductos tbody");
 const subtotalEl = document.getElementById("subtotal");
 const ivaEl = document.getElementById("iva");
 const totalEl = document.getElementById("total");
+const empresa = document.getElementById("clienteEmpresa").value;
 
 document.getElementById("addRow").addEventListener("click", addRow);
 
@@ -85,12 +86,13 @@ document.getElementById("btnWA").addEventListener("click", () => {
 
   const nombre = document.getElementById("clienteNombre").value;
   const telefonoRaw = document.getElementById("clienteTelefono").value;
+  const empresa = document.getElementById("clienteEmpresa").value;
   const total = totalEl.textContent;
 
   // convertir a formato internacional (México)
   const telefono = "521" + telefonoRaw;
 
-  // 🔹 construir detalle de productos
+  // 🔹 construir detalle de productos (MEJORADO)
   let detalle = "";
 
   document.querySelectorAll("#tablaProductos tbody tr").forEach((row) => {
@@ -99,18 +101,20 @@ document.getElementById("btnWA").addEventListener("click", () => {
     const totalRow = row.querySelector(".rowTotal").textContent;
 
     if (desc) {
-      detalle += `• ${desc} x${qty} = $${totalRow}\n`;
+      detalle += `• ${desc} (x${qty}) → $${totalRow}\n`;
     }
   });
 
-  // 🔹 mensaje completo
+  // 🔹 mensaje completo whatsapp (MEJORADO)
   const mensaje = `Hola ${nombre},
 
 Gracias por cotizar en ${window.nombreTienda}.
-
+${empresa ? `Empresa: ${empresa}\n` : ""}
 Detalle:
 ${detalle}
-Total: $${total}`;
+Total: $${total}
+
+Quedo atento a cualquier duda.`;
 
   const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
 
