@@ -15,12 +15,20 @@ function addRow() {
     <td><input type="number" class="qty" value="1"></td>
     <td><input type="number" class="price" value="0"></td>
     <td class="rowTotal">0</td>
+    <td><button class="btnDelete">X</button></td>
   `;
 
   tabla.appendChild(row);
 
+  // 🔹 recalcular totales al cambiar inputs
   row.querySelectorAll("input").forEach((input) => {
     input.addEventListener("input", updateTotals);
+  });
+
+  // 🔹 eliminar fila
+  row.querySelector(".btnDelete").addEventListener("click", () => {
+    row.remove();
+    updateTotals();
   });
 }
 
@@ -123,4 +131,9 @@ document.getElementById("btnLimpiar").addEventListener("click", () => {
 
   // Agregar fila inicial vacía
   addRow();
+});
+
+row.querySelector(".btnDelete").addEventListener("click", () => {
+  row.remove();
+  updateTotals();
 });
