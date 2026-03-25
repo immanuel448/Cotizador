@@ -70,7 +70,9 @@ function validarFormulario() {
     return false;
   }
 
-  if (parseFloat(totalEl.textContent) <= 0) {
+  const totalNumero = parseFloat(totalEl.textContent.replace(/,/g, "")) || 0;
+
+  if (totalNumero <= 0) {
     alert("Agrega al menos un producto válido");
     return false;
   }
@@ -133,10 +135,9 @@ document.getElementById("btnLimpiar").addEventListener("click", () => {
   addRow();
 });
 
-row.querySelector(".btnDelete").addEventListener("click", () => {
-  row.remove();
-  updateTotals();
-});
+document
+  .getElementById("btnGuardar")
+  .addEventListener("click", guardarCotizacion);
 
 function guardarCotizacion() {
   if (!validarFormulario()) return;
@@ -151,6 +152,3 @@ function guardarCotizacion() {
 
   alert("Cotización guardada");
 }
-
-document.getElementById("btnGuardar").addEventListener("click", guardarCotizacion);
-

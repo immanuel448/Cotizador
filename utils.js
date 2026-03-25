@@ -8,17 +8,15 @@ window.formatearMoneda = (valor) => {
   }).format(valor);
 };
 
-window.utils = { formatearDinero };
-
 window.obtenerCotizacionActual = () => {
   const productos = [];
 
-  document.querySelectorAll("#tablaProductos tbody tr").forEach(row => {
+  document.querySelectorAll("#tablaProductos tbody tr").forEach((row) => {
     productos.push({
       desc: row.querySelector(".desc").value,
       qty: row.querySelector(".qty").value,
       price: row.querySelector(".price").value,
-      total: row.querySelector(".rowTotal").textContent
+      total: row.querySelector(".rowTotal").textContent,
     });
   });
 
@@ -26,15 +24,14 @@ window.obtenerCotizacionActual = () => {
     cliente: {
       nombre: document.getElementById("clienteNombre").value,
       telefono: document.getElementById("clienteTelefono").value,
-      empresa: document.getElementById("clienteEmpresa").value
+      empresa: document.getElementById("clienteEmpresa").value,
     },
     productos,
     totales: {
       subtotal: document.getElementById("subtotal").textContent,
       iva: document.getElementById("iva").textContent,
-      total: document.getElementById("total").textContent
+      total: document.getElementById("total").textContent,
     },
-    fecha: new Date().toISOString()
+    fecha: new Date().toISOString(),
   };
 };
-
