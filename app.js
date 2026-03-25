@@ -146,12 +146,14 @@ function guardarCotizacion() {
 
   const cotizacion = window.obtenerCotizacionActual();
 
-  let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+  cotizacion.folio = window.obtenerSiguienteFolio();
 
+  let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
   historial.push(cotizacion);
 
   localStorage.setItem("cotizaciones", JSON.stringify(historial));
 
+  renderHistorial();
   alert("Cotización guardada");
 }
 
@@ -216,18 +218,28 @@ document.addEventListener("click", (e) => {
   }
 });
 
-function guardarCotizacion() {
-  if (!validarFormulario()) return;
 
-  const cotizacion = window.obtenerCotizacionActual();
+function renderHistorial() {
+  const contenedor = document.getElementById("historial");
+  const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
-  let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
-  historial.push(cotizacion);
+  contenedor.innerHTML = "";
 
-  localStorage.setItem("cotizaciones", JSON.stringify(historial));
+  historial.forEach((cot, index) => {
+    const div = document.createElement("div");
+    div.style.borderBottom = "1px solid #ccc";
+    div.style.padding = "8px 0";
 
-  renderHistorial(); // 🔥 actualizar vista
-  alert("Cotización guardada");
+    const fecha = new Date(cot.fecha).toLocaleDateString();
+
+    div.innerHTML = `
+      <strong>Folio #${cot.folio || "-"}</strong> | ${fecha} <br>
+      ${cot.cliente.nombre} - $${cot.totales.total}
+      <br>
+      <button data-index="${index}" class="btnCargar">Cargar</button>
+      <button data-index="${index}" class="btnEliminar">X</button>
+    `;
+
+    contenedor.appendChild(div);
+  });
 }
-
-renderHistorial();

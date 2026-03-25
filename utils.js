@@ -35,3 +35,10 @@ window.obtenerCotizacionActual = () => {
     fecha: new Date().toISOString(),
   };
 };
+
+window.obtenerSiguienteFolio = () => {
+  let folio = parseInt(localStorage.getItem("folio")) || 1;
+  localStorage.setItem("folio", folio + 1);
+  return folio;
+};
+

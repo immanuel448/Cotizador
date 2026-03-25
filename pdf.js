@@ -10,7 +10,7 @@ function generarPDF() {
   const empresa = document.getElementById("clienteEmpresa").value;
 
   const fecha = new Date().toLocaleDateString();
-  const folio = Math.floor(Math.random() * 10000);
+  const folio = window.obtenerSiguienteFolio();
 
   // LOGO (opcional)
   const logo =
