@@ -40,7 +40,7 @@ function updateTotals() {
     const price = parseFloat(row.querySelector(".price").value) || 0;
 
     const total = qty * price;
-    row.querySelector(".rowTotal").textContent = total.toFixed(2);
+    row.querySelector(".rowTotal").textContent = window.formatearMoneda(total);
 
     subtotal += total;
   });
@@ -48,9 +48,9 @@ function updateTotals() {
   const iva = subtotal * 0.16;
   const total = subtotal + iva;
 
-  subtotalEl.textContent = subtotal.toFixed(2);
-  ivaEl.textContent = iva.toFixed(2);
-  totalEl.textContent = total.toFixed(2);
+  subtotalEl.textContent = window.formatearMoneda(subtotal);
+  ivaEl.textContent = window.formatearMoneda(iva);
+  totalEl.textContent = window.formatearMoneda(total);
 }
 
 // inicial

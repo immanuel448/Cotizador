@@ -32,18 +32,23 @@ function generarPDF() {
   doc.text(`Cliente: ${nombre}`, 14, 35);
   if (empresa) doc.text(`Empresa: ${empresa}`, 14, 41);
 
-  // Tabla
+  // Tabla productos
   const rows = [];
 
   document.querySelectorAll("#tablaProductos tbody tr").forEach((row) => {
     const desc = row.querySelector(".desc").value;
     const qty = row.querySelector(".qty").value;
     const price = row.querySelector(".price").value;
-    const total = row.querySelector(".rowTotal").textContent;
+    const totalRow = row.querySelector(".rowTotal").textContent;
 
-    if (desc) {
-      rows.push([desc, qty, `$${price}`, `$${total}`]);
-    }
+    if (!desc) return; // evita filas vacías
+
+    rows.push([
+      desc,
+      qty,
+      `$${window.formatearMoneda(price)}`,
+      `$${window.formatearMoneda(totalRow)}`
+    ]);
   });
 
   doc.autoTable({
@@ -51,38 +56,37 @@ function generarPDF() {
     head: [["Descripción", "Cant.", "Precio", "Total"]],
     body: rows,
     styles: { fontSize: 9 },
-    headStyles: { fillColor: [40, 40, 40] },
+    headStyles: { fillColor: [40, 40, 40] }
   });
 
-  // Totales (alineados a la derecha)
+  // Totales
   const finalY = doc.lastAutoTable.finalY + 10;
 
   const subtotal = document.getElementById("subtotal").textContent;
   const iva = document.getElementById("iva").textContent;
-  const total = document.getElementById("total").textContent;
+  const totalFinal = document.getElementById("total").textContent;
 
   doc.autoTable({
     startY: finalY,
     body: [
-      ["Subtotal", `$${subtotal}`],
-      ["IVA", `$${iva}`],
-      ["TOTAL", `$${total}`],
+      ["Subtotal", `$${window.formatearMoneda(subtotal)}`],
+      ["IVA", `$${window.formatearMoneda(iva)}`],
+      ["TOTAL", `$${window.formatearMoneda(totalFinal)}`]
     ],
     theme: "plain",
-    styles: {
-      fontSize: 10,
-    },
+    styles: { fontSize: 10 },
     columnStyles: {
-      0: { cellWidth: 20, halign: "left" },
-      1: { cellWidth: 35, halign: "left" },
+      0: { cellWidth: 30 },
+      1: { cellWidth: 40, halign: "right" }
     },
-    margin: { left: 134 },
+    margin: { left: 120 }
   });
 
-  // Footer simple
+  // Footer
   doc.setFontSize(11);
   doc.setTextColor(0, 51, 153);
   doc.text("Gracias por su preferencia", 105, 280, { align: "center" });
 
-  doc.save(`cotizacion_${nombre}.pdf`);
+  // Guardar
+  doc.save(`cotizacion_${nombre.replace(/\s+/g, "_")}.pdf`);
 }
