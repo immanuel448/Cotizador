@@ -137,3 +137,20 @@ row.querySelector(".btnDelete").addEventListener("click", () => {
   row.remove();
   updateTotals();
 });
+
+function guardarCotizacion() {
+  if (!validarFormulario()) return;
+
+  const cotizacion = window.obtenerCotizacionActual();
+
+  let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+
+  historial.push(cotizacion);
+
+  localStorage.setItem("cotizaciones", JSON.stringify(historial));
+
+  alert("Cotización guardada");
+}
+
+document.getElementById("btnGuardar").addEventListener("click", guardarCotizacion);
+
