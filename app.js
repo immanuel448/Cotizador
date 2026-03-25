@@ -72,6 +72,7 @@ function validarFormulario() {
 
 document.getElementById("btnWA").addEventListener("click", () => {
   if (!validarFormulario()) return;
+
   const nombre = document.getElementById("clienteNombre").value;
   const telefonoRaw = document.getElementById("clienteTelefono").value;
   const total = totalEl.textContent;
@@ -79,7 +80,28 @@ document.getElementById("btnWA").addEventListener("click", () => {
   // convertir a formato internacional (México)
   const telefono = "521" + telefonoRaw;
 
-  const mensaje = `Hola ${nombre}, tu cotización de ${window.nombreTienda} es de $${total}`;
+  // 🔹 construir detalle de productos
+  let detalle = "";
+
+  document.querySelectorAll("#tablaProductos tbody tr").forEach((row) => {
+    const desc = row.querySelector(".desc").value;
+    const qty = row.querySelector(".qty").value;
+    const totalRow = row.querySelector(".rowTotal").textContent;
+
+    if (desc) {
+      detalle += `• ${desc} x${qty} = $${totalRow}\n`;
+    }
+  });
+
+  // 🔹 mensaje completo
+  const mensaje = `Hola ${nombre},
+
+Gracias por cotizar en ${window.nombreTienda}.
+
+Detalle:
+${detalle}
+Total: $${total}`;
+
   const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
 
   window.open(url, "_blank");
