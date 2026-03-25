@@ -118,20 +118,18 @@ Total: $${total}`;
 });
 
 document.getElementById("btnLimpiar").addEventListener("click", () => {
-  // Limpiar inputs del cliente
+  if (!confirm("¿Seguro que quieres limpiar la cotización?")) return;
+
   document.getElementById("clienteNombre").value = "";
   document.getElementById("clienteTelefono").value = "";
   document.getElementById("clienteEmpresa").value = "";
 
-  // Limpiar tabla de productos
   tabla.innerHTML = "";
 
-  // Reiniciar totales
   subtotalEl.textContent = "0.00";
   ivaEl.textContent = "0.00";
   totalEl.textContent = "0.00";
 
-  // Agregar fila inicial vacía
   addRow();
 });
 
@@ -188,7 +186,7 @@ document.addEventListener("click", (e) => {
     // Productos
     tabla.innerHTML = "";
 
-    cot.productos.forEach(p => {
+    cot.productos.forEach((p) => {
       addRow();
       const lastRow = tabla.lastChild;
 
@@ -203,6 +201,7 @@ document.addEventListener("click", (e) => {
 
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("btnEliminar")) {
+    if (!confirm("¿Eliminar esta cotización?")) return;
     const index = e.target.dataset.index;
     let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
@@ -228,4 +227,3 @@ function guardarCotizacion() {
 }
 
 renderHistorial();
-
