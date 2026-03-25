@@ -152,3 +152,80 @@ function guardarCotizacion() {
 
   alert("Cotización guardada");
 }
+
+function renderHistorial() {
+  const contenedor = document.getElementById("historial");
+  const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+
+  contenedor.innerHTML = "";
+
+  historial.forEach((cot, index) => {
+    const div = document.createElement("div");
+    div.style.borderBottom = "1px solid #ccc";
+    div.style.padding = "8px 0";
+
+    div.innerHTML = `
+      <strong>${cot.cliente.nombre}</strong> - $${cot.totales.total}
+      <button data-index="${index}" class="btnCargar">Cargar</button>
+      <button data-index="${index}" class="btnEliminar">X</button>
+    `;
+
+    contenedor.appendChild(div);
+  });
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btnCargar")) {
+    const index = e.target.dataset.index;
+    const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+    const cot = historial[index];
+
+    // Cliente
+    document.getElementById("clienteNombre").value = cot.cliente.nombre;
+    document.getElementById("clienteTelefono").value = cot.cliente.telefono;
+    document.getElementById("clienteEmpresa").value = cot.cliente.empresa;
+
+    // Productos
+    tabla.innerHTML = "";
+
+    cot.productos.forEach(p => {
+      addRow();
+      const lastRow = tabla.lastChild;
+
+      lastRow.querySelector(".desc").value = p.desc;
+      lastRow.querySelector(".qty").value = p.qty;
+      lastRow.querySelector(".price").value = p.price;
+    });
+
+    updateTotals();
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btnEliminar")) {
+    const index = e.target.dataset.index;
+    let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+
+    historial.splice(index, 1);
+
+    localStorage.setItem("cotizaciones", JSON.stringify(historial));
+    renderHistorial();
+  }
+});
+
+function guardarCotizacion() {
+  if (!validarFormulario()) return;
+
+  const cotizacion = window.obtenerCotizacionActual();
+
+  let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+  historial.push(cotizacion);
+
+  localStorage.setItem("cotizaciones", JSON.stringify(historial));
+
+  renderHistorial(); // 🔥 actualizar vista
+  alert("Cotización guardada");
+}
+
+renderHistorial();
+
