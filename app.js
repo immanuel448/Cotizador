@@ -178,15 +178,21 @@ function renderHistorial() {
 
   const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
+  // invertir orden
+  historial.reverse();
+
   contenedor.innerHTML = "";
   historial.forEach((cot, index) => {
+    // AQUÍ VA
+    const realIndex = historial.length - 1 - index;
+
     const div = document.createElement("div");
 
     div.style.borderBottom = "1px solid #ccc";
     div.style.padding = "8px 0";
 
     // 🔹 resaltar el más reciente (último del array)
-    if (index === historial.length - 1) {
+    if (index === 0) {
       div.style.backgroundColor = "#eef6ff";
       div.style.borderRadius = "6px";
       div.style.padding = "8px";
@@ -204,9 +210,8 @@ function renderHistorial() {
       <span>${cot.cliente.nombre} | $${cot.totales.total}</span>
       
       <div style="display:flex; gap:6px;">
-        <button data-index="${index}" class="btnCargar">Cargar</button>
-        <button data-index="${index}" class="btnEliminar">X</button>
-      </div>
+          <button data-index="${realIndex}" class="btnCargar">Cargar</button>
+          <button data-index="${realIndex}" class="btnEliminar">X</button>      </div>
     </div>
   `;
 
@@ -222,8 +227,10 @@ document.addEventListener("click", (e) => {
 
   // CARGAR
   if (e.target.classList.contains("btnCargar")) {
-    const index = e.target.dataset.index;
+    const index = parseInt(e.target.dataset.index); // 🔴 este ya es realIndex
     const cot = historial[index];
+
+    if (!cot) return; // protección
 
     document.getElementById("clienteNombre").value = cot.cliente.nombre;
     document.getElementById("clienteTelefono").value = cot.cliente.telefono;
@@ -245,9 +252,10 @@ document.addEventListener("click", (e) => {
 
   // ELIMINAR
   if (e.target.classList.contains("btnEliminar")) {
+    const index = parseInt(e.target.dataset.index);
+
     if (!confirm("¿Eliminar esta cotización?")) return;
 
-    const index = e.target.dataset.index;
     historial.splice(index, 1);
 
     localStorage.setItem("cotizaciones", JSON.stringify(historial));
