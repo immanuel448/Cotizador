@@ -179,29 +179,36 @@ function renderHistorial() {
   const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
   contenedor.innerHTML = "";
-
   historial.forEach((cot, index) => {
     const div = document.createElement("div");
+
     div.style.borderBottom = "1px solid #ccc";
     div.style.padding = "8px 0";
+
+    // 🔹 resaltar el más reciente (último del array)
+    if (index === historial.length - 1) {
+      div.style.backgroundColor = "#eef6ff";
+      div.style.borderRadius = "6px";
+      div.style.padding = "8px";
+    }
 
     const fecha = new Date(cot.fecha).toLocaleDateString();
 
     div.innerHTML = `
-  <div style="display:flex; justify-content:space-between; font-weight:bold;">
-    <span>Folio #${cot.folio || "-"}</span>
-    <span>${fecha}</span>
-  </div>
-
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-    <span>${cot.cliente.nombre} | $${cot.totales.total}</span>
-    
-    <div style="display:flex; gap:6px;">
-      <button data-index="${index}" class="btnCargar">Cargar</button>
-      <button data-index="${index}" class="btnEliminar">X</button>
+    <div style="display:flex; justify-content:space-between; font-weight:bold;">
+      <span>Folio #${cot.folio || "-"}</span>
+      <span>${fecha}</span>
     </div>
-  </div>
-`;
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+      <span>${cot.cliente.nombre} | $${cot.totales.total}</span>
+      
+      <div style="display:flex; gap:6px;">
+        <button data-index="${index}" class="btnCargar">Cargar</button>
+        <button data-index="${index}" class="btnEliminar">X</button>
+      </div>
+    </div>
+  `;
 
     contenedor.appendChild(div);
   });
