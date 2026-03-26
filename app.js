@@ -240,6 +240,7 @@ function renderHistorial(filtro = "") {
         
         <div style="display:flex; gap:6px;">
           <button data-index="${realIndex}" class="btnCargar">Cargar</button>
+          <button data-index="${realIndex}" class="btnDuplicar">Duplicar</button>
           <button data-index="${realIndex}" class="btnEliminar">X</button>
         </div>
       </div>
@@ -295,6 +296,42 @@ document.addEventListener("click", (e) => {
     localStorage.setItem("cotizaciones", JSON.stringify(historial));
     renderHistorial();
   }
+
+  // DUPLICAR
+if (e.target.classList.contains("btnDuplicar")) {
+  const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+  const index = parseInt(e.target.dataset.index);
+  const cot = historial[index];
+
+  if (!cot) return;
+
+  // Cliente
+  document.getElementById("clienteNombre").value = cot.cliente.nombre;
+  document.getElementById("clienteTelefono").value = cot.cliente.telefono;
+  document.getElementById("clienteEmpresa").value = cot.cliente.empresa;
+
+  // Productos
+  tabla.innerHTML = "";
+
+  cot.productos.forEach((p) => {
+    addRow();
+    const lastRow = tabla.lastChild;
+
+    lastRow.querySelector(".desc").value = p.desc;
+    lastRow.querySelector(".qty").value = p.qty;
+    lastRow.querySelector(".price").value = p.price;
+  });
+
+  updateTotals();
+
+  // 🔹 IMPORTANTE: salir de modo edición
+  indiceEdicion = null;
+
+  document.getElementById("modoEdicion").style.display = "none";
+  document.getElementById("btnGuardar").textContent = "Guardar";
+
+  alert("Cotización lista para duplicar (se guardará como nueva)");
+}
 });
 
 // ---------------------
