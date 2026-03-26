@@ -2,12 +2,13 @@ const tabla = document.querySelector("#tablaProductos tbody");
 const subtotalEl = document.getElementById("subtotal");
 const ivaEl = document.getElementById("iva");
 const totalEl = document.getElementById("total");
-const empresa = document.getElementById("clienteEmpresa").value;
 
 document.getElementById("addRow").addEventListener("click", addRow);
-
 document.getElementById("tienda").textContent = window.nombreTienda;
 
+// ---------------------
+// AGREGAR FILA
+// ---------------------
 function addRow() {
   const row = document.createElement("tr");
 
@@ -21,18 +22,19 @@ function addRow() {
 
   tabla.appendChild(row);
 
-  // 🔹 recalcular totales al cambiar inputs
   row.querySelectorAll("input").forEach((input) => {
     input.addEventListener("input", updateTotals);
   });
 
-  // 🔹 eliminar fila
   row.querySelector(".btnDelete").addEventListener("click", () => {
     row.remove();
     updateTotals();
   });
 }
 
+// ---------------------
+// CALCULAR TOTALES
+// ---------------------
 function updateTotals() {
   let subtotal = 0;
 
@@ -57,6 +59,9 @@ function updateTotals() {
 // inicial
 addRow();
 
+// ---------------------
+// VALIDACIÓN
+// ---------------------
 function validarFormulario() {
   const nombre = document.getElementById("clienteNombre").value.trim();
   const telefono = document.getElementById("clienteTelefono").value.trim();
@@ -81,6 +86,9 @@ function validarFormulario() {
   return true;
 }
 
+// ---------------------
+// WHATSAPP
+// ---------------------
 document.getElementById("btnWA").addEventListener("click", () => {
   if (!validarFormulario()) return;
 
@@ -89,10 +97,8 @@ document.getElementById("btnWA").addEventListener("click", () => {
   const empresa = document.getElementById("clienteEmpresa").value;
   const total = totalEl.textContent;
 
-  // convertir a formato internacional (México)
   const telefono = "521" + telefonoRaw;
 
-  // 🔹 construir detalle de productos (MEJORADO)
   let detalle = "";
 
   document.querySelectorAll("#tablaProductos tbody tr").forEach((row) => {
@@ -101,15 +107,15 @@ document.getElementById("btnWA").addEventListener("click", () => {
     const totalRow = row.querySelector(".rowTotal").textContent;
 
     if (desc) {
-      detalle += `• ${desc} (x${qty}) → $${totalRow}\n`;
+      detalle += `• ${desc} (x${qty}) = $${totalRow}\n`;
     }
   });
 
-  // 🔹 mensaje completo whatsapp (MEJORADO)
   const mensaje = `Hola ${nombre},
 
 Gracias por cotizar en ${window.nombreTienda}.
 ${empresa ? `Empresa: ${empresa}\n` : ""}
+
 Detalle:
 ${detalle}
 Total: $${total}
@@ -121,6 +127,9 @@ Quedo atento a cualquier duda.`;
   window.open(url, "_blank");
 });
 
+// ---------------------
+// LIMPIAR
+// ---------------------
 document.getElementById("btnLimpiar").addEventListener("click", () => {
   if (!confirm("¿Seguro que quieres limpiar la cotización?")) return;
 
@@ -137,6 +146,9 @@ document.getElementById("btnLimpiar").addEventListener("click", () => {
   addRow();
 });
 
+// ---------------------
+// GUARDAR
+// ---------------------
 document
   .getElementById("btnGuardar")
   .addEventListener("click", guardarCotizacion);
@@ -145,10 +157,10 @@ function guardarCotizacion() {
   if (!validarFormulario()) return;
 
   const cotizacion = window.obtenerCotizacionActual();
-
   cotizacion.folio = window.obtenerSiguienteFolio();
 
   let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+
   historial.push(cotizacion);
 
   localStorage.setItem("cotizaciones", JSON.stringify(historial));
@@ -157,8 +169,13 @@ function guardarCotizacion() {
   alert("Cotización guardada");
 }
 
+// ---------------------
+// RENDER HISTORIAL (ÚNICA)
+// ---------------------
 function renderHistorial() {
   const contenedor = document.getElementById("historial");
+  if (!contenedor) return;
+
   const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
   contenedor.innerHTML = "";
@@ -168,28 +185,43 @@ function renderHistorial() {
     div.style.borderBottom = "1px solid #ccc";
     div.style.padding = "8px 0";
 
+    const fecha = new Date(cot.fecha).toLocaleDateString();
+
     div.innerHTML = `
-      <strong>${cot.cliente.nombre}</strong> - $${cot.totales.total}
+  <div style="display:flex; justify-content:space-between; font-weight:bold;">
+    <span>Folio #${cot.folio || "-"}</span>
+    <span>${fecha}</span>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+    <span>${cot.cliente.nombre} | $${cot.totales.total}</span>
+    
+    <div style="display:flex; gap:6px;">
       <button data-index="${index}" class="btnCargar">Cargar</button>
       <button data-index="${index}" class="btnEliminar">X</button>
-    `;
+    </div>
+  </div>
+`;
 
     contenedor.appendChild(div);
   });
 }
 
+// ---------------------
+// EVENTOS HISTORIAL
+// ---------------------
 document.addEventListener("click", (e) => {
+  const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+
+  // CARGAR
   if (e.target.classList.contains("btnCargar")) {
     const index = e.target.dataset.index;
-    const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
     const cot = historial[index];
 
-    // Cliente
     document.getElementById("clienteNombre").value = cot.cliente.nombre;
     document.getElementById("clienteTelefono").value = cot.cliente.telefono;
     document.getElementById("clienteEmpresa").value = cot.cliente.empresa;
 
-    // Productos
     tabla.innerHTML = "";
 
     cot.productos.forEach((p) => {
@@ -203,14 +235,12 @@ document.addEventListener("click", (e) => {
 
     updateTotals();
   }
-});
 
-document.addEventListener("click", (e) => {
+  // ELIMINAR
   if (e.target.classList.contains("btnEliminar")) {
     if (!confirm("¿Eliminar esta cotización?")) return;
-    const index = e.target.dataset.index;
-    let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
+    const index = e.target.dataset.index;
     historial.splice(index, 1);
 
     localStorage.setItem("cotizaciones", JSON.stringify(historial));
@@ -218,28 +248,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-
-function renderHistorial() {
-  const contenedor = document.getElementById("historial");
-  const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
-
-  contenedor.innerHTML = "";
-
-  historial.forEach((cot, index) => {
-    const div = document.createElement("div");
-    div.style.borderBottom = "1px solid #ccc";
-    div.style.padding = "8px 0";
-
-    const fecha = new Date(cot.fecha).toLocaleDateString();
-
-    div.innerHTML = `
-      <strong>Folio #${cot.folio || "-"}</strong> | ${fecha} <br>
-      ${cot.cliente.nombre} - $${cot.totales.total}
-      <br>
-      <button data-index="${index}" class="btnCargar">Cargar</button>
-      <button data-index="${index}" class="btnEliminar">X</button>
-    `;
-
-    contenedor.appendChild(div);
-  });
-}
+// ---------------------
+// INICIALIZAR HISTORIAL
+// ---------------------
+renderHistorial();
