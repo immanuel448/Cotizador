@@ -241,6 +241,7 @@ function renderHistorial(filtro = "") {
         <div style="display:flex; gap:6px;">
           <button data-index="${realIndex}" class="btnCargar">Cargar</button>
           <button data-index="${realIndex}" class="btnDuplicar">Duplicar</button>
+          <button data-index="${realIndex}" class="btnExportarUno">Exportar</button>
           <button data-index="${realIndex}" class="btnEliminar">X</button>
         </div>
       </div>
@@ -298,40 +299,57 @@ document.addEventListener("click", (e) => {
   }
 
   // DUPLICAR
-if (e.target.classList.contains("btnDuplicar")) {
-  const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
-  const index = parseInt(e.target.dataset.index);
-  const cot = historial[index];
+  if (e.target.classList.contains("btnDuplicar")) {
+    const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+    const index = parseInt(e.target.dataset.index);
+    const cot = historial[index];
 
-  if (!cot) return;
+    if (!cot) return;
 
-  // Cliente
-  document.getElementById("clienteNombre").value = cot.cliente.nombre;
-  document.getElementById("clienteTelefono").value = cot.cliente.telefono;
-  document.getElementById("clienteEmpresa").value = cot.cliente.empresa;
+    // Cliente
+    document.getElementById("clienteNombre").value = cot.cliente.nombre;
+    document.getElementById("clienteTelefono").value = cot.cliente.telefono;
+    document.getElementById("clienteEmpresa").value = cot.cliente.empresa;
 
-  // Productos
-  tabla.innerHTML = "";
+    // Productos
+    tabla.innerHTML = "";
 
-  cot.productos.forEach((p) => {
-    addRow();
-    const lastRow = tabla.lastChild;
+    cot.productos.forEach((p) => {
+      addRow();
+      const lastRow = tabla.lastChild;
 
-    lastRow.querySelector(".desc").value = p.desc;
-    lastRow.querySelector(".qty").value = p.qty;
-    lastRow.querySelector(".price").value = p.price;
-  });
+      lastRow.querySelector(".desc").value = p.desc;
+      lastRow.querySelector(".qty").value = p.qty;
+      lastRow.querySelector(".price").value = p.price;
+    });
 
-  updateTotals();
+    updateTotals();
 
-  // 🔹 IMPORTANTE: salir de modo edición
-  indiceEdicion = null;
+    // 🔹 IMPORTANTE: salir de modo edición
+    indiceEdicion = null;
 
-  document.getElementById("modoEdicion").style.display = "none";
-  document.getElementById("btnGuardar").textContent = "Guardar";
+    document.getElementById("modoEdicion").style.display = "none";
+    document.getElementById("btnGuardar").textContent = "Guardar";
 
-  alert("Cotización lista para duplicar (se guardará como nueva)");
-}
+    alert("Cotización lista para duplicar (se guardará como nueva)");
+  }
+
+  // EXPORTAR UNA
+  if (e.target.classList.contains("btnExportarUno")) {
+    const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+    const index = parseInt(e.target.dataset.index);
+    const cot = historial[index];
+
+    if (!cot) return;
+
+    const dataStr = JSON.stringify(cot, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `cotizacion_${cot.folio || "sinfolio"}.json`;
+    a.click();
+  }
 });
 
 // ---------------------
