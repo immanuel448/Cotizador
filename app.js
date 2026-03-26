@@ -289,3 +289,56 @@ document.addEventListener("click", (e) => {
 // INICIALIZAR HISTORIAL
 // ---------------------
 renderHistorial();
+
+//exportar e importar
+
+document.getElementById("btnExportar").addEventListener("click", () => {
+  const historial = localStorage.getItem("cotizaciones");
+
+  if (!historial) {
+    alert("No hay datos");
+    return;
+  }
+
+  const blob = new Blob([historial], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "cotizaciones.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("btnImportar").addEventListener("click", () => {
+  document.getElementById("fileImportar").click();
+});
+
+document.getElementById("fileImportar").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = (event) => {
+    try {
+      const data = JSON.parse(event.target.result);
+
+      if (!Array.isArray(data)) {
+        alert("Archivo inválido");
+        return;
+      }
+
+      localStorage.setItem("cotizaciones", JSON.stringify(data));
+      renderHistorial();
+
+      alert("Importado correctamente");
+    } catch {
+      alert("Error al importar");
+    }
+  };
+
+  reader.readAsText(file);
+});
+
