@@ -428,3 +428,54 @@ document.getElementById("fileImportar").addEventListener("change", (e) => {
 document.getElementById("buscador").addEventListener("input", (e) => {
   renderHistorial(e.target.value);
 });
+
+document.getElementById("btnImportarUno").addEventListener("click", () => {
+  document.getElementById("inputImportarUno").click();
+});
+
+document.getElementById("inputImportarUno").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function (event) {
+    try {
+      const nueva = JSON.parse(event.target.result);
+
+      let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+
+      // 🔹 evitar duplicados básicos (folio + nombre)
+      const existe = historial.some(
+        (c) =>
+          c.folio === nueva.folio &&
+          c.cliente.nombre === nueva.cliente.nombre
+      );
+
+      if (existe) {
+        alert("Esa cotización ya existe");
+        return;
+      }
+
+      // 🔹 asignar nuevo folio (para no conflictos)
+      nueva.folio = window.obtenerSiguienteFolio();
+
+      historial.push(nueva);
+
+      localStorage.setItem("cotizaciones", JSON.stringify(historial));
+
+      renderHistorial();
+
+      alert("Cotización importada");
+    } catch (err) {
+      alert("Archivo inválido");
+    }
+  };
+
+  reader.readAsText(file);
+
+  // reset input
+  e.target.value = "";
+});
+
+
