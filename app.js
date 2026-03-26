@@ -146,6 +146,10 @@ document.getElementById("btnLimpiar").addEventListener("click", () => {
 
   indiceEdicion = null;
 
+  indiceEdicion = null;
+  document.getElementById("modoEdicion").style.display = "none";
+  document.getElementById("btnGuardar").textContent = "Guardar";
+
   addRow();
 });
 
@@ -160,22 +164,24 @@ function guardarCotizacion() {
   if (!validarFormulario()) return;
 
   const cotizacion = window.obtenerCotizacionActual();
-
   let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
   if (indiceEdicion !== null) {
-    // 🔹 EDITAR
+    // EDITAR
     cotizacion.folio = historial[indiceEdicion].folio;
     historial[indiceEdicion] = cotizacion;
   } else {
-    // 🔹 NUEVO
+    // NUEVO
     cotizacion.folio = window.obtenerSiguienteFolio();
     historial.push(cotizacion);
   }
 
   localStorage.setItem("cotizaciones", JSON.stringify(historial));
 
+  // RESET estado edición (AQUÍ VA)
   indiceEdicion = null;
+  document.getElementById("modoEdicion").style.display = "none";
+  document.getElementById("btnGuardar").textContent = "Guardar";
 
   renderHistorial();
   alert("Cotización guardada");
@@ -248,6 +254,9 @@ document.addEventListener("click", (e) => {
     document.getElementById("clienteNombre").value = cot.cliente.nombre;
     document.getElementById("clienteTelefono").value = cot.cliente.telefono;
     document.getElementById("clienteEmpresa").value = cot.cliente.empresa;
+    document.getElementById("modoEdicion").style.display = "block";
+    document.getElementById("folioEdicion").textContent = `#${cot.folio}`;
+    document.getElementById("btnGuardar").textContent = "Actualizar";
 
     tabla.innerHTML = "";
 
