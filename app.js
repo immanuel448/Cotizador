@@ -2,6 +2,7 @@ const tabla = document.querySelector("#tablaProductos tbody");
 const subtotalEl = document.getElementById("subtotal");
 const ivaEl = document.getElementById("iva");
 const totalEl = document.getElementById("total");
+let indiceEdicion = null;
 
 document.getElementById("addRow").addEventListener("click", addRow);
 document.getElementById("tienda").textContent = window.nombreTienda;
@@ -143,6 +144,8 @@ document.getElementById("btnLimpiar").addEventListener("click", () => {
   ivaEl.textContent = "0.00";
   totalEl.textContent = "0.00";
 
+  indiceEdicion = null;
+
   addRow();
 });
 
@@ -157,13 +160,22 @@ function guardarCotizacion() {
   if (!validarFormulario()) return;
 
   const cotizacion = window.obtenerCotizacionActual();
-  cotizacion.folio = window.obtenerSiguienteFolio();
 
   let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
-  historial.push(cotizacion);
+  if (indiceEdicion !== null) {
+    // 🔹 EDITAR
+    cotizacion.folio = historial[indiceEdicion].folio;
+    historial[indiceEdicion] = cotizacion;
+  } else {
+    // 🔹 NUEVO
+    cotizacion.folio = window.obtenerSiguienteFolio();
+    historial.push(cotizacion);
+  }
 
   localStorage.setItem("cotizaciones", JSON.stringify(historial));
+
+  indiceEdicion = null;
 
   renderHistorial();
   alert("Cotización guardada");
@@ -227,8 +239,9 @@ document.addEventListener("click", (e) => {
 
   // CARGAR
   if (e.target.classList.contains("btnCargar")) {
-    const index = parseInt(e.target.dataset.index); // 🔴 este ya es realIndex
+    const index = parseInt(e.target.dataset.index); // éste ya es realIndex
     const cot = historial[index];
+    indiceEdicion = index;
 
     if (!cot) return; // protección
 
