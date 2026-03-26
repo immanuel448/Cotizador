@@ -190,18 +190,29 @@ function guardarCotizacion() {
 // ---------------------
 // RENDER HISTORIAL (ÚNICA)
 // ---------------------
-function renderHistorial() {
+function renderHistorial(filtro = "") {
   const contenedor = document.getElementById("historial");
   if (!contenedor) return;
 
-  const historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+  let historial = JSON.parse(localStorage.getItem("cotizaciones")) || [];
 
-  // invertir orden
+  // invertir orden (como ya lo tenías)
   historial.reverse();
 
   contenedor.innerHTML = "";
+
+  const texto = filtro.toLowerCase();
+
   historial.forEach((cot, index) => {
-    // AQUÍ VA
+    // 🔹 filtro
+    const match =
+      cot.cliente.nombre.toLowerCase().includes(texto) ||
+      (cot.cliente.empresa || "").toLowerCase().includes(texto) ||
+      String(cot.folio || "").includes(texto);
+
+    if (!match) return;
+
+    // 🔹 índice real (IMPORTANTE con reverse)
     const realIndex = historial.length - 1 - index;
 
     const div = document.createElement("div");
@@ -209,7 +220,7 @@ function renderHistorial() {
     div.style.borderBottom = "1px solid #ccc";
     div.style.padding = "8px 0";
 
-    // 🔹 resaltar el más reciente (último del array)
+    // 🔹 resaltar el más reciente
     if (index === 0) {
       div.style.backgroundColor = "#eef6ff";
       div.style.borderRadius = "6px";
@@ -219,19 +230,20 @@ function renderHistorial() {
     const fecha = new Date(cot.fecha).toLocaleDateString();
 
     div.innerHTML = `
-    <div style="display:flex; justify-content:space-between; font-weight:bold;">
-      <span>Folio #${cot.folio || "-"}</span>
-      <span>${fecha}</span>
-    </div>
+      <div style="display:flex; justify-content:space-between; font-weight:bold;">
+        <span>Folio #${cot.folio || "-"}</span>
+        <span>${fecha}</span>
+      </div>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-      <span>${cot.cliente.nombre} | $${cot.totales.total}</span>
-      
-      <div style="display:flex; gap:6px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+        <span>${cot.cliente.nombre} | $${cot.totales.total}</span>
+        
+        <div style="display:flex; gap:6px;">
           <button data-index="${realIndex}" class="btnCargar">Cargar</button>
-          <button data-index="${realIndex}" class="btnEliminar">X</button>      </div>
-    </div>
-  `;
+          <button data-index="${realIndex}" class="btnEliminar">X</button>
+        </div>
+      </div>
+    `;
 
     contenedor.appendChild(div);
   });
@@ -330,7 +342,23 @@ document.getElementById("fileImportar").addEventListener("change", (e) => {
         return;
       }
 
-      localStorage.setItem("cotizaciones", JSON.stringify(data));
+      const actual = JSON.parse(localStorage.getItem("cotizaciones")) || [];
+
+      const combinado = [...actual];
+
+      data.forEach((nueva) => {
+        const existe = actual.some(
+          (c) =>
+            c.fecha === nueva.fecha &&
+            c.cliente.nombre === nueva.cliente.nombre,
+        );
+
+        if (!existe) {
+          combinado.push(nueva);
+        }
+      });
+
+      localStorage.setItem("cotizaciones", JSON.stringify(combinado));
       renderHistorial();
 
       alert("Importado correctamente");
@@ -342,3 +370,6 @@ document.getElementById("fileImportar").addEventListener("change", (e) => {
   reader.readAsText(file);
 });
 
+document.getElementById("buscador").addEventListener("input", (e) => {
+  renderHistorial(e.target.value);
+});
