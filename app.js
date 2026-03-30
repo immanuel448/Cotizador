@@ -5,7 +5,7 @@ const tabla = document.querySelector("#tablaProductos tbody");
 const subtotalEl = document.getElementById("subtotal");
 const ivaEl = document.getElementById("iva");
 const totalEl = document.getElementById("total");
-
+let hayCambios = false;
 let indiceEdicion = null;
 
 document.getElementById("tienda").textContent = window.nombreTienda;
@@ -33,7 +33,8 @@ function cargarBorrador() {
   if (!data) return;
 
   document.getElementById("clienteNombre").value = data.cliente.nombre || "";
-  document.getElementById("clienteTelefono").value = data.cliente.telefono || "";
+  document.getElementById("clienteTelefono").value =
+    data.cliente.telefono || "";
   document.getElementById("clienteEmpresa").value = data.cliente.empresa || "";
 
   tabla.innerHTML = "";
@@ -57,7 +58,10 @@ document.getElementById("addRow").addEventListener("click", addRow);
 
 // autoguardado cliente
 ["clienteNombre", "clienteTelefono", "clienteEmpresa"].forEach((id) => {
-  document.getElementById(id).addEventListener("input", guardarBorradorDebounced);
+  document.getElementById(id).addEventListener("input", () => {
+    hayCambios = true;
+    guardarBorradorDebounced();
+  });
 });
 
 // ---------------------
@@ -77,10 +81,14 @@ function addRow() {
   tabla.appendChild(row);
 
   row.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("input", updateTotals);
+    input.addEventListener("input", () => {
+      hayCambios = true;
+      updateTotals();
+    });
   });
 
   row.querySelector(".btnDelete").addEventListener("click", () => {
+    hayCambios = true;
     row.remove();
     updateTotals();
   });
@@ -110,6 +118,7 @@ function updateTotals() {
   totalEl.textContent = window.formatearMoneda(total);
 
   guardarBorradorDebounced();
+  hayCambios = true;
 }
 
 // ---------------------
@@ -119,11 +128,11 @@ function validarFormulario() {
   const nombre = document.getElementById("clienteNombre").value.trim();
   const telefono = document.getElementById("clienteTelefono").value.trim();
 
-  if (!nombre) return alert("Falta nombre"), false;
-  if (!/^\d{10}$/.test(telefono)) return alert("Teléfono inválido"), false;
+  if (!nombre) return (alert("Falta nombre"), false);
+  if (!/^\d{10}$/.test(telefono)) return (alert("Teléfono inválido"), false);
 
   const totalNumero = parseFloat(totalEl.textContent.replace(/,/g, "")) || 0;
-  if (totalNumero <= 0) return alert("Agrega productos"), false;
+  if (totalNumero <= 0) return (alert("Agrega productos"), false);
 
   return true;
 }
@@ -151,12 +160,15 @@ document.getElementById("btnLimpiar").addEventListener("click", () => {
   localStorage.removeItem("borrador");
 
   addRow();
+  hayCambios = false;
 });
 
 // ---------------------
 // GUARDAR
 // ---------------------
-document.getElementById("btnGuardar").addEventListener("click", guardarCotizacion);
+document
+  .getElementById("btnGuardar")
+  .addEventListener("click", guardarCotizacion);
 
 function guardarCotizacion() {
   if (!validarFormulario()) return;
@@ -180,6 +192,7 @@ function guardarCotizacion() {
 
   renderHistorial();
   alert("Guardado");
+  hayCambios = false;
 }
 
 // ---------------------
@@ -260,9 +273,18 @@ document.addEventListener("click", (e) => {
   }
 });
 
+window.addEventListener("beforeunload", (e) => {
+  if (!hayCambios) return;
+
+  e.preventDefault();
+  e.returnValue = "";
+});
+
 // ---------------------
 // INIT
 // ---------------------
 addRow();
 cargarBorrador();
+hayCambios = false;
 renderHistorial();
+
