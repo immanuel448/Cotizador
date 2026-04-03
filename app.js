@@ -7,10 +7,11 @@ const ivaEl = document.getElementById("iva");
 const totalEl = document.getElementById("total");
 let hayCambios = false;
 let indiceEdicion = null;
+let folioActual = null;
 
 document.getElementById("tienda").textContent = window.nombreTienda;
 
-// ---------------------
+// ---------------------guardarCotizacion
 // UTILIDADES (PRIMERO)
 // ---------------------
 function debounce(fn, delay = 500) {
@@ -178,11 +179,13 @@ function guardarCotizacion() {
 
   if (indiceEdicion !== null) {
     cotizacion.folio = historial[indiceEdicion].folio;
-    historial[indiceEdicion] = cotizacion;
+    historial[indiceEdicion] = cotizacion; // 👈 FALTABA
   } else {
     cotizacion.folio = window.obtenerSiguienteFolio();
-    historial.push(cotizacion);
+    historial.push(cotizacion); // 👈 FALTABA
   }
+
+  folioActual = cotizacion.folio; // ✅ correcto
 
   localStorage.setItem("cotizaciones", JSON.stringify(historial));
 
@@ -243,6 +246,7 @@ document.addEventListener("click", (e) => {
     const cot = historial[index];
 
     indiceEdicion = index;
+    folioActual = cot.folio;
 
     document.getElementById("clienteNombre").value = cot.cliente.nombre;
     document.getElementById("clienteTelefono").value = cot.cliente.telefono;
@@ -287,4 +291,3 @@ addRow();
 cargarBorrador();
 hayCambios = false;
 renderHistorial();
-
