@@ -1,5 +1,5 @@
 
-Herramienta web para automatizar la generación de cotizaciones con cálculo automático, almacenamiento local y exportación a PDF.
+# Herramienta web para automatizar la generación de cotizaciones con cálculo automático, almacenamiento local y exportación a PDF.
 
 ---
 
