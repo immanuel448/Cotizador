@@ -4,8 +4,8 @@
 ---
 
 ## Demo
-
-(Opcional: agregar link o GIF)
+![Ejemplo del cotizador](IMG/ejemploCotizador.webp)
+https://github.com/immanuel448/Cotizador.git
 
 ---
 
@@ -70,7 +70,8 @@ Este proyecto automatiza completamente el proceso de cotización:
 
 ## Instalación
 
-git clone https://github.com/tu-usuario/tu-repo.git  
+git clone https://github.com/immanuel448/Cotizador.git
+
 cd tu-repo  
 
 Abrir el archivo index.html en el navegador.
@@ -120,7 +121,7 @@ Abrir el archivo index.html en el navegador.
 
 ## Autor
 
-Aquiles Brinco
+[Lucero Emmanuel](https://github.com/immanuel448)
 
 ---
 
