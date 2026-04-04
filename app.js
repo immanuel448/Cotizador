@@ -248,6 +248,8 @@ document.addEventListener("click", (e) => {
     indiceEdicion = index;
     folioActual = cot.folio;
 
+    document.getElementById("modoEdicion").style.display = "block";
+    document.getElementById("btnGuardar").textContent = "Actualizar";
     document.getElementById("clienteNombre").value = cot.cliente.nombre;
     document.getElementById("clienteTelefono").value = cot.cliente.telefono;
     document.getElementById("clienteEmpresa").value = cot.cliente.empresa;
@@ -263,6 +265,7 @@ document.addEventListener("click", (e) => {
     });
 
     updateTotals();
+    hayCambios = false; // cambios guardados al cargar
   }
 
   if (e.target.classList.contains("btnEliminar")) {
